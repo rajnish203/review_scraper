@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup as bs
 from urllib.request import urlopen as uReq
 import certifi
 import logging
+import os
 import pymongo
+from dotenv import load_dotenv
 logging.basicConfig(filename="scrapper.log" , level=logging.INFO)
 
 app = Flask(__name__)
@@ -74,8 +76,9 @@ def index():
                           "Comment": custComment}
                 reviews.append(mydict)
             logging.info("log my final result {}".format(reviews))
-
-            client =pymongo.MongoClient("mongodb+srv://connectwithrajnish2023:connectwithrajnish2023@cluster0.duyye3a.mongodb.net/")
+            load_dotenv()
+            mongo_uri = os.getenv("mongo_uri")
+            client =pymongo.MongoClient(mongo_uri)
             db=client['review_data']
             reviews_collection=db['reviews_data']
             reviews_collection.insert_many(reviews)
